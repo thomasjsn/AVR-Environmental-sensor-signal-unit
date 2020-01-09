@@ -1,10 +1,10 @@
 '--------------------------------------------------------------
 '                   Thomas Jensen | stdout.no
 '--------------------------------------------------------------
-'  file: AVR_OESU_v.2.1 0x15
-'  date: 08/03/2011
-'  prot: 2.0            0x14
-'  sn# : 84             0x54
+'  file: AVR_OESU_v.2.1.1 0xD3
+'  date: 10/09/2011
+'  prot: 2.0              0xC8
+'  sn# : 84               0x54
 '--------------------------------------------------------------
 $regfile = "m8def.dat"
 $crystal = 8000000
@@ -40,13 +40,16 @@ Const Pwm_max = 255
 If Stored_id >= Min_id And Stored_id <= Max_id Then Id = Stored_id Else Id = Min_id
 
 Ids = Hex(id)                                               'module id number
-Const Status_verfirm = "15"                                 'status version firmware
-Const Status_verprot = "14"                                 'status version protocol
 Const Status_serial = "0054"                                'serial number
-Const Status_di = "2"                                       'digital inputs
-Const Status_do = "5"                                       'digital outputs
-Const Status_ai = "2"                                       'analog inputs
-Const Status_ao = "1"                                       'analog outputs
+Const Status_verboot = "0064"                               'status version bootloader
+Const Status_verfirm = "00D3"                               'status version firmware
+Const Status_verprot = "00C8"                               'status version protocol
+Const Status_di = "0002"                                    'digital inputs
+Const Status_do = "0005"                                    'digital outputs
+Const Status_ai = "0002"                                    'analog inputs
+Const Status_ao = "0001"                                    'analog outputs
+Const Status_ibit = "000A"                                  'analog input bits
+Const Status_obit = "0008"                                  'analog output bits
 
 Start Watchdog
 Set Status.0
@@ -223,38 +226,71 @@ Send = Ids + ",s,0," + Ws
 Print Send
 
 Case "1"
-   Send = Ids + ",s,1," + Status_verfirm
+   Send = Ids + ",s,1," + Status_serial
    Print Send
 Case "2"
-   Send = Ids + ",s,2," + Status_verprot
+   Send = Ids + ",s,2," + Status_verboot
    Print Send
 Case "3"
-   Send = Ids + ",s,3," + Status_serial
+   Send = Ids + ",s,3," + Status_verfirm
    Print Send
 Case "4"
-   Send = Ids + ",s,4," + Status_di
+   Send = Ids + ",s,4," + Status_verprot
    Print Send
 Case "5"
-   Send = Ids + ",s,5," + Status_do
+   Send = Ids + ",s,5," + Status_di
    Print Send
 Case "6"
-   Send = Ids + ",s,6," + Status_ai
+   Send = Ids + ",s,6," + Status_do
    Print Send
 Case "7"
-   Send = Ids + ",s,7," + Status_ao
+   Send = Ids + ",s,7," + Status_ai
+   Print Send
+Case "8"
+   Send = Ids + ",s,8," + Status_ao
+   Print Send
+Case "9"
+   Send = Ids + ",s,9," + Status_ibit
+   Print Send
+Case "A"
+   Send = Ids + ",s,A," + Status_obit
    Print Send
 
-Case "E"
-   Send = Ids + ",s,E,0001"
+
+'Case "E"
+'   Send = Ids + ",s,E,0001"
+'   Print Send
+'   Wait 1
+'Case "F"
+'   If Com_value >= Min_id And Com_value <= Max_id Then
+'      Stored_id = Com_value
+'      Id = Stored_id
+'      End If
+'   Send = Ids + ",s,F,00" + Hex(id)
+'   Print Send
+'   If Ids <> Hex(id) Then Wait 1
+
+Case Else
+   Send = Ids + ",s," + Com_nr + ",0000"
+   Print Send
+
+End Select
+End If
+
+If Com_com = "!" Then
+Select Case Com_nr
+
+Case "0"
+   Send = Ids + ",!,0,0001"
    Print Send
    Wait 1
 
-Case "F"
+Case "1"
    If Com_value >= Min_id And Com_value <= Max_id Then
       Stored_id = Com_value
       Id = Stored_id
       End If
-   Send = Ids + ",s,F,00" + Hex(id)
+   Send = Ids + ",!,1,00" + Hex(id)
    Print Send
    If Ids <> Hex(id) Then Wait 1
 

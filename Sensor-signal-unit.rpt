@@ -1,6 +1,6 @@
 Report       : Sensor-signal-unit
 Date         : 01-09-2020
-Time         : 23:08:15
+Time         : 23:10:39
 
 Compiler     : BASCOM-AVR LIBRARY V 2.0.7.8
 Processor    : M8
@@ -8,20 +8,20 @@ SRAM         : 400 hex
 EEPROM       : 200 hex
 ROMSIZE      : 2000 hex
 
-ROMIMAGE     : EBC hex  -> Will fit into ROM
-ROMIMAGE     :  3772 dec
-FLASH USED   :  46  %
+ROMIMAGE     : FBA hex  -> Will fit into ROM
+ROMIMAGE     :  4026 dec
+FLASH USED   :  49  %
 BAUD         : 38400 Baud
 XTAL         : 8000000 Hz
 BAUD error   : 0.16%
 
 Stack start  : 45F hex
-Stack size   : 28 hex
-S-Stacksize  : 10 hex
-S-Stackstart : 438 hex
-Framesize    : 20 hex
-Framestart   : 408 hex
-Space left   :  878  dec
+Stack size   : 20 hex
+S-Stacksize  : 8 hex
+S-Stackstart : 440 hex
+Framesize    : 10 hex
+Framestart   : 428 hex
+Space left   :  910  dec
 
 LCD DB7      : PORTB.7
 LCD DB6      : PORTB.6
@@ -441,7 +441,7 @@ OCR2UB                           1
 TCR2UB                           0
 _DATE_FORMAT                     0
 _DATE_SEPARATOR                  92
-_GSTRBUF                         1032
+_GSTRBUF                         1064
 _DECIMALPOINT                    46
 _RTSCTS                          0
 _RTSCTS1                         0
@@ -472,20 +472,23 @@ _PRDWORD                         0
 _PBIN_EXTENDED                   0
 _BIGSTRINGS                      0
 _FPROTECT                        0
-_HWSTACK_LOW                     &H0437
-_SWSTACK_LOW                     &H0428
-_FRAME_HIGH                      &H0429
+_HWSTACK_LOW                     &H043F
+_SWSTACK_LOW                     &H0438
+_FRAME_HIGH                      &H0439
 _XMEGA                           0
 MIN_ID                           32
 MAX_ID                           125
 PWM_MAX                          255
-STATUS_VERFIRM                   "15"
-STATUS_VERPROT                   "14"
 STATUS_SERIAL                    "0054"
-STATUS_DI                        "2"
-STATUS_DO                        "5"
-STATUS_AI                        "2"
-STATUS_AO                        "1"
+STATUS_VERBOOT                   "0064"
+STATUS_VERFIRM                   "00D3"
+STATUS_VERPROT                   "00C8"
+STATUS_DI                        "0002"
+STATUS_DO                        "0005"
+STATUS_AI                        "0002"
+STATUS_AO                        "0001"
+STATUS_IBIT                      "000A"
+STATUS_OBIT                      "0008"
 CBITINFINITY                     0
 CMBITINFINITY                    1
 CBITZERO                         1
