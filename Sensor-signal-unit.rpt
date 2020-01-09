@@ -1,6 +1,6 @@
 Report       : Sensor-signal-unit
 Date         : 01-09-2020
-Time         : 23:10:39
+Time         : 23:12:45
 
 Compiler     : BASCOM-AVR LIBRARY V 2.0.7.8
 Processor    : M8
@@ -8,9 +8,9 @@ SRAM         : 400 hex
 EEPROM       : 200 hex
 ROMSIZE      : 2000 hex
 
-ROMIMAGE     : FBA hex  -> Will fit into ROM
-ROMIMAGE     :  4026 dec
-FLASH USED   :  49  %
+ROMIMAGE     : B8C hex  -> Will fit into ROM
+ROMIMAGE     :  2956 dec
+FLASH USED   :  36  %
 BAUD         : 38400 Baud
 XTAL         : 8000000 Hz
 BAUD error   : 0.16%
@@ -21,7 +21,7 @@ S-Stacksize  : 8 hex
 S-Stackstart : 440 hex
 Framesize    : 10 hex
 Framestart   : 428 hex
-Space left   :  910  dec
+Space left   :  878  dec
 
 LCD DB7      : PORTB.7
 LCD DB6      : PORTB.6
@@ -90,24 +90,23 @@ COMPARE1                         Word              004A          74
 PWM1B                            Word              0048          72 
 COMPARE1B                        Word              0048          72 
 ERR                              Bit [2]           0006          6 
-SEND                             String * 11       0060          96 
+SEND                             String * 30       0060          96 
 STORED_ID                        EEPROM Byte       0000          0 
-SERIALCHARWAITING                Byte              006C          108 
-SERIALCHAR                       Byte              006D          109 
-COMMINPUT                        String * 9        006E          110 
-OUT_VALUE                        Word              0078          120 
-COM_COM                          String * 1        007A          122 
-COM_NR                           String * 1        007C          124 
-LED                              Byte              007E          126 
-COM_STAT                         String * 4        007F          127 
-STATUS                           Byte              0084          132 
-WS                               String * 4        0085          133 
-W                                Word              008A          138 
-COM_VALUE                        Word              008C          140 
-VALUE                            Word              008E          142 
-VALUES                           String * 4        0090          144 
-ID                               Byte              0095          149 
-IDS                              String * 2        0096          150 
+SERIALCHARWAITING                Byte              007F          127 
+SERIALCHAR                       Byte              0080          128 
+COMMINPUT                        String * 9        0081          129 
+COM_VALUE                        Word              008B          139 
+COM_COM                          String * 1        008D          141 
+COM_NR                           String * 1        008F          143 
+LED                              Byte              0091          145 
+COM_STAT                         String * 4        0092          146 
+STATUS                           Byte              0097          151 
+VALUE                            Word              0098          152 
+VALUES                           String * 4        009A          154 
+ID                               Byte              009F          159 
+IDS                              String * 2        00A0          160 
+CRC                              Byte              00A3          163 
+VERINFO                          String * 20       00A4          164 
 
 --------------------------------------------------------------------------------
 Constant                         Value
@@ -476,19 +475,21 @@ _HWSTACK_LOW                     &H043F
 _SWSTACK_LOW                     &H0438
 _FRAME_HIGH                      &H0439
 _XMEGA                           0
+_VERSION_MAJOR                   2
+_VERSION_MINOR                   2
+_VERSION_BUILD                   64
 MIN_ID                           32
 MAX_ID                           125
 PWM_MAX                          255
-STATUS_SERIAL                    "0054"
-STATUS_VERBOOT                   "0064"
-STATUS_VERFIRM                   "00D3"
-STATUS_VERPROT                   "00C8"
-STATUS_DI                        "0002"
-STATUS_DO                        "0005"
-STATUS_AI                        "0002"
-STATUS_AO                        "0001"
-STATUS_IBIT                      "000A"
-STATUS_OBIT                      "0008"
+OUT_MAX                          31
+STAT_MAX                         7
+STATUS_SERIAL                    "84"
+STATUS_NAME                      "OESU"
+STATUS_VERBOOT                   "1.0.0"
+STATUS_VERPROT                   "2.1.1"
+STATUS_DIO                       "0205"
+STATUS_AI                        "020A"
+STATUS_AO                        "0108"
 CBITINFINITY                     0
 CMBITINFINITY                    1
 CBITZERO                         1
@@ -553,21 +554,4 @@ ADCD                             not used
 COMPARE1                         not used
 PWM1B                            not used
 
-Source string could be too big to fit into target string [___TEMP1>VALUES]  in line  0 
-Source string could be too big to fit into target string [___TEMP2>VALUES]  in line  0 
-Source string could be too big to fit into target string [___TEMP3>VALUES]  in line  0 
-Source string could be too big to fit into target string [___TEMP4>WS]  in line  0 
-Source string could be too big to fit into target string [___TEMP5>WS]  in line  0 
-Source string could be too big to fit into target string [___TEMP6>WS]  in line  0 
-Source string could be too big to fit into target string [___TEMP7>VALUES]  in line  0 
-Source string could be too big to fit into target string [___TEMP8>VALUES]  in line  0 
-Source string could be too big to fit into target string [___TEMP9>VALUES]  in line  0 
-Source string could be too big to fit into target string [___TEMP10>WS]  in line  0 
-Source string could be too big to fit into target string [___TEMP11>WS]  in line  0 
-Source string could be too big to fit into target string [___TEMP12>WS]  in line  0 
-Source string could be too big to fit into target string [___TEMP13>WS]  in line  0 
-Source string could be too big to fit into target string [___TEMP14>WS]  in line  0 
-Source string could be too big to fit into target string [___TEMP15>WS]  in line  0 
-Source string could be too big to fit into target string [___TEMP16>WS]  in line  0 
-Source string could be too big to fit into target string [___TEMP17>WS]  in line  0 
-Source string could be too big to fit into target string [___TEMP18>WS]  in line  0 
+Source string could be too big to fit into target string [SEND>___STRBUF]  in line  0 
