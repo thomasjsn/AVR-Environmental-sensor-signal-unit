@@ -1,185 +1,263 @@
 '--------------------------------------------------------------
 '                   Thomas Jensen | stdout.no
 '--------------------------------------------------------------
-'  file: AVR_OESU_v.1.2
-'  date: 31/07/2010
+'  file: AVR_OESU_v.2.1 0x15
+'  date: 08/03/2011
+'  prot: 2.0            0x14
+'  sn# : 84             0x54
 '--------------------------------------------------------------
 $regfile = "m8def.dat"
 $crystal = 8000000
-$baud = 9600
+$baud = 38400
 Config Portb = Output
 Config Portd.5 = Output
 Config Portd.6 = Output
 Config Portd.7 = Output
 Config Portc.2 = Input
 Config Portc.3 = Input
-Config Watchdog = 1024
+Config Watchdog = 128
 
 'serial
 'PD0: Rx
 'PD1: Tx
 
-Dim Lifesignal As Word , Send As String * 20
+Dim Send As String * 11 , Stored_id As Eram Byte
 Dim Serialcharwaiting As Byte , Serialchar As Byte
-Dim Comminput As String * 15 , Din(2) As Byte
-Dim Input_com As String * 1 , Input_ut As String * 2
-Dim Input_stat As String * 1 , Led As Byte
-Dim W1s As String * 3 , W2s As String * 3 , W1 As Word , W2 As Word
-Dim All As Bit , A As Byte , Value As Byte
+Dim Comminput As String * 9 , Out_value As Word
+Dim Com_com As String * 1 , Com_nr As String * 1
+Dim Led As Byte , Com_stat As String * 4 , Status As Byte
+Dim Ws As String * 4 , W As Word , Com_value As Word
+Dim Value As Word , Values As String * 4 , Id As Byte , Ids As String * 2
 
+Config Timer1 = Pwm , Pwm = 8 , Prescale = 1 , Compare A Pwm = Clear Down
 Config Adc = Single , Prescaler = Auto , Reference = Avcc
 Start Adc
 
-Const Id = "003"
+Const Min_id = 32
+Const Max_id = 125
+Const Pwm_max = 255
 
-Portd.6 = 1
-Waitms 5000
-Portd.6 = 0
+If Stored_id >= Min_id And Stored_id <= Max_id Then Id = Stored_id Else Id = Min_id
+
+Ids = Hex(id)                                               'module id number
+Const Status_verfirm = "15"                                 'status version firmware
+Const Status_verprot = "14"                                 'status version protocol
+Const Status_serial = "0054"                                'serial number
+Const Status_di = "2"                                       'digital inputs
+Const Status_do = "5"                                       'digital outputs
+Const Status_ai = "2"                                       'analog inputs
+Const Status_ao = "1"                                       'analog outputs
+
 Start Watchdog
+Set Status.0
+If Id = Min_id Then Set Status.1
 
 Main:
 Serialcharwaiting = Ischarwaiting()
 
 If Serialcharwaiting = 1 Then
    Serialchar = Inkey()
-      Select Case Serialchar
-      Case 42                                               '*
+      If Serialchar = Id Or Serialchar = 126 Then
+      Led = 203
       Goto Set_value
-      End Select
+      End If
    End If
 
 'led timer
-If Led > 0 Then Decr Led
-If Led = 100 Then Portd.5 = 1
+If Led > 0 Then Decr Led                                    'activity LED
+If Led = 200 Then Portd.5 = 1
 If Led = 0 Then Portd.5 = 0
 
-'lifesignal
-If Lifesignal > 0 Then Decr Lifesignal
-If Lifesignal = 500 Then Portd.7 = 1
-If Lifesignal = 0 Then
-   Portd.7 = 0
-   Lifesignal = 2100
-   End If
+'green & red led
+If Status > 0 Then Portd.6 = 1 Else Portd.6 = 0
+Portd.7 = Not Portd.6
 
 Reset Watchdog
+Waitus 50
 Goto Main
 End
 
+'serial receive
 Set_value:
 Input Comminput Noecho                                      'read serialport
 
-Input_com = Mid(comminput , 5 , 1)                          'command check
-Input_ut = Mid(comminput , 7 , 2)                           'output nr check
-Input_stat = Mid(comminput , 10 , 1)                        'output stat check
+Com_com = Mid(comminput , 2 , 1)                            'command check
+Com_nr = Mid(comminput , 4 , 1)                             'output nr check
+Com_stat = Mid(comminput , 6 , 4)                           'output full check
+Com_value = Hexval(com_stat)
 
-If Input_com = "s" And Input_ut = "01" Then
-All = 1
+'output
+If Com_com = "o" Then
+Select Case Com_nr
 
+'set digital output status
+Case "0"
+If Com_stat <> "" Then
+Out_value = Com_value
 
-   For A = 1 To 6
-   Input_ut = "0" + Str(a)
-   Goto Outputs
-   Next A
-   For A = 1 To 4
-   Input_ut = "0" + Str(a)
-   Goto Inputs
-   Next A
-   Send = Id + ":s:01:" + Str(portb)
-   Print Send
-   Send = Id + ":s:02:" + Str(portb)
-   Print Send
+If Out_value >= 16 Then                                     'digital output 5
+   Portb.5 = 1
+   Reset Out_value.4
+   Else
+   Portb.5 = 0
+   End If
+If Out_value >= 8 Then                                      'digital output 4
+   Portb.4 = 1
+   Reset Out_value.3
+   Else
+   Portb.4 = 0
+   End If
+If Out_value >= 4 Then                                      'digital output 3
+   Portb.3 = 1
+   Reset Out_value.2
+   Else
+   Portb.3 = 0
+   End If
+If Out_value >= 2 Then                                      'digital output 2
+   Portb.2 = 1
+   Reset Out_value.1
+   Else
+   Portb.2 = 0
+   End If
+If Out_value >= 1 Then                                      'digital output 1
+   Portb.0 = 1
+   Else
+   Portb.0 = 0
+   End If
+End If
 
-All = 0
+'get digital output status
+Value = 0
+If Portb.0 = 1 Then Set Value.0                             'digital output 1
+If Portb.2 = 1 Then Set Value.1                             'digital output 2
+If Portb.3 = 1 Then Set Value.2                             'digital output 3
+If Portb.4 = 1 Then Set Value.3                             'digital output 4
+If Portb.5 = 1 Then Set Value.4                             'digital output 5
+   Values = Hex(value)
+   If Len(values) < 2 Then Values = "000" + Values
+   If Len(values) < 3 Then Values = "00" + Values
+   If Len(values) < 4 Then Values = "0" + Values
+Send = Ids + ",o,0," + Values
+Print Send
+Goto Main
+
+Case "1"                                                    'analog out 1
+If Com_stat <> "" Then
+   If Com_value > Pwm_max Then Com_value = Pwm_max
+   Pwm1a = Com_value
+   End If
+Ws = Hex(pwm1a)
+If Len(ws) < 2 Then Ws = "000" + Ws
+If Len(ws) < 3 Then Ws = "00" + Ws
+If Len(ws) < 4 Then Ws = "0" + Ws
+Send = Ids + ",o,1," + Ws
+Print Send
+
+End Select
 Goto Main
 End If
 
-'output
-If Input_com = "o" Then
-Outputs:
-Led = 103
+If Com_com = "i" Then
+Select Case Com_nr
 
-If Portb.0 = 1 Then Value = Value + 1
-
-
-Select Case Input_ut
-
-Case "01"                                                   'output 1
-If Input_stat = "1" Then Portb.0 = 1
-If Input_stat = "0" Then Portb.0 = 0
-Send = Id + ":o:01:00" + Str(portb.0)
+Case "0"                                                    'get digital input status
+Value = 0
+If Pinc.2 = 0 Then Set Value.0                              'digital input 1
+If Pinc.3 = 0 Then Set Value.1                              'digital input 2
+   Values = Hex(value)
+   If Len(values) < 2 Then Values = "000" + Values
+   If Len(values) < 3 Then Values = "00" + Values
+   If Len(values) < 4 Then Values = "0" + Values
+Send = Ids + ",i,0," + Values
 Print Send
+Goto Main
 
-Case "02"                                                   'output 2
-If Input_stat = "1" Then Portb.1 = 1
-If Input_stat = "0" Then Portb.1 = 0
-Send = Id + ":o:02:00" + Str(portb.1)
-Print Send
+Case "1"                                                    'analog input 1
+   W = Getadc(0)
+   Ws = Hex(w)
+   If Len(ws) < 2 Then Ws = "000" + Ws
+   If Len(ws) < 3 Then Ws = "00" + Ws
+   If Len(ws) < 4 Then Ws = "0" + Ws
+   Send = Ids + ",i,1," + Ws
+   Print Send
 
-Case "03"                                                   'output 3
-If Input_stat = "1" Then Portb.2 = 1
-If Input_stat = "0" Then Portb.2 = 0
-Send = Id + ":o:03:00" + Str(portb.2)
-Print Send
+Case "2"                                                    'analog input 2
+   W = Getadc(1)
+   Ws = Hex(w)
+   If Len(ws) < 2 Then Ws = "000" + Ws
+   If Len(ws) < 3 Then Ws = "00" + Ws
+   If Len(ws) < 4 Then Ws = "0" + Ws
+   Send = Ids + ",i,2," + Ws
+   Print Send
 
-Case "04"                                                   'output 4
-If Input_stat = "1" Then Portb.3 = 1
-If Input_stat = "0" Then Portb.3 = 0
-Send = Id + ":o:04:00" + Str(portb.3)
-Print Send
-
-Case "05"                                                   'output 5
-If Input_stat = "1" Then Portb.4 = 1
-If Input_stat = "0" Then Portb.4 = 0
-Send = Id + ":o:05:00" + Str(portb.4)
-Print Send
-
-Case "06"
-If Input_stat = "1" Then Portb.5 = 1                           'output 6
-If Input_stat = "0" Then Portb.5 = 0
-Send = Id + ":o:06:00" + Str(portb.5)
-Print Send
-
-If All = 1 Then Return
 End Select
+Goto Main
 End If
 
-If Input_com = "i" Then
-Inputs:
-Select Case Input_ut
+'status
+If Com_com = "s" Then                                       'read status
+Select Case Com_nr
 
-Case "01"
-   W1 = Getadc(0)
-   If W1 > 999 Then W1 = 999
-   Led = 103
-   W1s = Str(w1)
-   If Len(w1s) < 2 Then W1s = "0" + W1s
-   If Len(w1s) < 3 Then W1s = "0" + W1s
-   Send = Id + ":i:01:" + W1s
-   Print Send
-                                                     'status input 1
-Case "02"
-   W2 = Getadc(1)
-   If W2 > 999 Then W2 = 999
-   Led = 103
-   W2s = Str(w2)
-   If Len(w2s) < 2 Then W2s = "0" + W2s
-   If Len(w2s) < 3 Then W2s = "0" + W2s
-   Send = Id + ":i:02:" + W2s
-   Print Send
-                                                     'status input 2
-Case "03"
-   Led = 103
-   Din(1) = Not Pinc.2
-   Send = Id + ":i:03:00" + Str(din(1))
-   Print Send
-                                                     'status input 3
-Case "04"
-   Led = 103
-   Din(2) = Not Pinc.3
-   Send = Id + ":i:04:00" + Str(din(2))
-   Print Send                                               'status input 4
+Case "0"
+If Com_stat <> "" Then
+Out_value = Com_value
 
-If All = 1 Then Return
+If Out_value >= 4 Then
+   Toggle Status.2
+   Reset Out_value.2
+   End If
+If Out_value >= 2 Then
+   Reset Status.1
+   Reset Out_value.1
+   End If
+If Out_value >= 1 Then
+   Reset Status.0
+   End If
+End If
+
+Ws = Hex(status)
+If Len(ws) < 2 Then Ws = "000" + Ws
+If Len(ws) < 3 Then Ws = "00" + Ws
+If Len(ws) < 4 Then Ws = "0" + Ws
+Send = Ids + ",s,0," + Ws
+Print Send
+
+Case "1"
+   Send = Ids + ",s,1," + Status_verfirm
+   Print Send
+Case "2"
+   Send = Ids + ",s,2," + Status_verprot
+   Print Send
+Case "3"
+   Send = Ids + ",s,3," + Status_serial
+   Print Send
+Case "4"
+   Send = Ids + ",s,4," + Status_di
+   Print Send
+Case "5"
+   Send = Ids + ",s,5," + Status_do
+   Print Send
+Case "6"
+   Send = Ids + ",s,6," + Status_ai
+   Print Send
+Case "7"
+   Send = Ids + ",s,7," + Status_ao
+   Print Send
+
+Case "E"
+   Send = Ids + ",s,E,0001"
+   Print Send
+   Wait 1
+
+Case "F"
+   If Com_value >= Min_id And Com_value <= Max_id Then
+      Stored_id = Com_value
+      Id = Stored_id
+      End If
+   Send = Ids + ",s,F,00" + Hex(id)
+   Print Send
+   If Ids <> Hex(id) Then Wait 1
+
 End Select
 End If
 
