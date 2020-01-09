@@ -1,6 +1,6 @@
 Report       : Sensor-signal-unit
 Date         : 01-09-2020
-Time         : 23:04:22
+Time         : 23:06:35
 
 Compiler     : BASCOM-AVR LIBRARY V 2.0.7.8
 Processor    : M8
@@ -8,9 +8,9 @@ SRAM         : 400 hex
 EEPROM       : 200 hex
 ROMSIZE      : 2000 hex
 
-ROMIMAGE     : E6A hex  -> Will fit into ROM
-ROMIMAGE     :  3690 dec
-FLASH USED   :  45  %
+ROMIMAGE     : 9E6 hex  -> Will fit into ROM
+ROMIMAGE     :  2534 dec
+FLASH USED   :  30  %
 BAUD         : 9600 Baud
 XTAL         : 8000000 Hz
 BAUD error   : 0.16%
@@ -21,7 +21,7 @@ S-Stacksize  : 10 hex
 S-Stackstart : 438 hex
 Framesize    : 20 hex
 Framestart   : 408 hex
-Space left   :  841  dec
+Space left   :  869  dec
 
 LCD DB7      : PORTB.7
 LCD DB6      : PORTB.6
@@ -90,27 +90,23 @@ COMPARE1                         Word              004A          74
 PWM1B                            Word              0048          72 
 COMPARE1B                        Word              0048          72 
 ERR                              Bit [2]           0006          6 
-W1                               Word              0060          96 
-W2                               Word              0062          98 
-LIFESIGNAL                       Word              0064          100 
-LIFE                             Integer           0066          102 
-SEND                             String * 20       0068          104 
-INN                              Byte(4)           007D          125 
-A                                Byte              0081          129 
-A2                               String * 1        0082          130 
-SERIALCHARWAITING                Byte              0084          132 
-SERIALCHAR                       Byte              0085          133 
-COMMINPUT                        String * 15       0086          134 
-INPUT_NR                         String * 3        0096          150 
-INPUT_COM                        String * 1        009A          154 
-INPUT_UT                         String * 2        009C          156 
-INPUT_STAT                       String * 1        009F          159 
-LED                              Byte              00A1          161 
-UT                               Byte(7)           00A2          162 
-UT_T                             Word(6)           00A9          169 
-B                                Byte              00B5          181 
-W1S                              String * 3        00B6          182 
-W2S                              String * 3        00BA          186 
+LIFESIGNAL                       Word              0060          96 
+SEND                             String * 20       0062          98 
+SERIALCHARWAITING                Byte              0077          119 
+SERIALCHAR                       Byte              0078          120 
+COMMINPUT                        String * 15       0079          121 
+DIN                              Byte(2)           0089          137 
+INPUT_COM                        String * 1        008B          139 
+INPUT_UT                         String * 2        008D          141 
+INPUT_STAT                       String * 1        0090          144 
+LED                              Byte              0092          146 
+W1S                              String * 3        0093          147 
+W2S                              String * 3        0097          151 
+W1                               Word              009B          155 
+W2                               Word              009D          157 
+ALL                              Bit [7]           009F          159 
+A                                Byte              00A0          160 
+VALUE                            Byte              00A1          161 
 
 --------------------------------------------------------------------------------
 Constant                         Value
@@ -544,8 +540,7 @@ ADCD                             not used
 COMPARE1                         not used
 PWM1B                            not used
 
-Source string could be too big to fit into target string [___TEMP1>A2]  in line  0 
+Source string could be too big to fit into target string [___TEMP1>W1S]  in line  0 
 Source string could be too big to fit into target string [___TEMP2>W1S]  in line  0 
-Source string could be too big to fit into target string [___TEMP3>W1S]  in line  0 
+Source string could be too big to fit into target string [___TEMP3>W2S]  in line  0 
 Source string could be too big to fit into target string [___TEMP4>W2S]  in line  0 
-Source string could be too big to fit into target string [___TEMP5>W2S]  in line  0 
