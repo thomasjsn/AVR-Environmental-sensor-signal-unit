@@ -1,10 +1,21 @@
-## Source code for project: [Environmental sensor and signalling unit](https://link.stdout.no/i)
+# Serial port environmental sensor and signalling unit
 
-Two analog sensors: temperature (LM35) and light intensity (TSL252R), five colored LEDs for signals and a buzzer, Uses an AVR ATmega8 microcontroller.
+> Light intensity and temperature sensors; with white, green, yellow, red and blue signal LEDs and a buzzer. RS232 communication. Uses an AVR ATmega8 microcontroller.
 
-![Environmental sensor and signalling unit](image.jpg)
+Project documentation available at: https://cavelab.dev/wiki/Serial_port_environmental_sensor_and_signalling_unit
 
-Written in basic, using [Bascom-AVR](http://www.mcselec.com/).
+![Serial port environmental sensor and signalling unit](https://cavelab.dev/images/thumb/3/3f/Oesu_18_modul_ferdig_montert.JPG/600px-Oesu_18_modul_ferdig_montert.JPG)
 
-### Author
-[Thomas Jensen](https://thomas.stdout.no)
+Written in basic, using [BASCOM-AVR](http://www.mcselec.com/).
+
+## Author
+**Thomas Jensen**
+* Twitter: [@thomasjsn](https://twitter.com/thomasjsn)
+* Github: [@thomasjsn](https://github.com/thomasjsn)
+* Website: [cavelab.dev](https://cavelab.dev/wiki/User:Thomas)
+
+## License
+The MIT License (MIT). Please see [license file](LICENSE.txt) for more information.
+
+---
+_This README was automatically generated using the MediaWiki API_ (`pageid:334`)
